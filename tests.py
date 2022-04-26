@@ -43,6 +43,7 @@ def testLinearBackward():
     # print("db:", np.sum(np.abs(linear.db - torchLinear.bias.grad.detach().numpy()))) 
 
     assert np.sum(np.abs(linear.dW - torchLinear.weight.grad.T.detach().numpy())) < 1e-10, "Linear backward test failed"
+    assert np.sum(np.abs(linear.db - torchLinear.bias.grad.detach().numpy())) < 1e-10, "Linear backward test failed"
     print("Linear backward test passed")
 
     # print("W:", np.sum(np.abs(linear.W - torchLinear.weight.T.detach().numpy()))) 
@@ -98,6 +99,11 @@ def testNNBackward():
     assert np.sum(np.abs(model.layers[0].dW - torchLinear1.weight.grad.T.detach().numpy())) < 1e-10, \
         "NN backward test failed, linear 1 dW is different"
     assert np.sum(np.abs(model.layers[0].db - torchLinear1.bias.grad.detach().numpy())) < 1e-10, \
+        "NN backward test failed, linear 1 db is different"
+
+    assert np.sum(np.abs(model.layers[2].dW - torchLinear2.weight.grad.T.detach().numpy())) < 1e-10, \
+        "NN backward test failed, linear 1 dW is different"
+    assert np.sum(np.abs(model.layers[2].db - torchLinear2.bias.grad.detach().numpy())) < 1e-10, \
         "NN backward test failed, linear 1 db is different"
 
     print("NN backward test passed")
@@ -190,11 +196,15 @@ def mnist35Test():
     print("RealNN backward test passed")
 
 if __name__ == "__main__":
-    testLinear()
-    testLinearBackward()
-    testNN()
-    testNNBackward()
-    testSigmoid()
-    testSigmoidBackward()
-    mnist35Test()
+    for i in range(10):
+        print("Test {}:".format(i+1))
+        
+        random.seed(i+1)
+        testLinear()
+        testLinearBackward()
+        testNN()
+        testNNBackward()
+        testSigmoid()
+        testSigmoidBackward()
+        mnist35Test()
 
